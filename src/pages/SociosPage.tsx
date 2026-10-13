@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Fab } from '../components/layout/Fab'
 import { PageHeader } from '../components/layout/PageHeader'
 import { FiltrosSocios } from '../components/socios/FiltrosSocios'
 import { SocioCard } from '../components/socios/SocioCard'
@@ -103,8 +102,6 @@ export function SociosPage() {
           />
         )}
       </section>
-
-      <Fab />
     </>
   )
 }

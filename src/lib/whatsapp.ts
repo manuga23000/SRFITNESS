@@ -3,7 +3,7 @@ import { formatearFecha } from './dates'
 
 export function mensajeRecordatorio(socio: SocioConEstado): string {
   const fecha = formatearFecha(socio.fechaVencimiento)
-  const nombre = socio.nombre.split(' ')[0]
+  const nombre = (socio.nombre || socio.apellido).split(' ')[0]
   switch (socio.estado) {
     case 'vencido':
       return `Hola ${nombre}! Te recuerdo que tu cuota del gym venció el ${fecha}. Cuando puedas, acercate a renovarla 💪 SR Fitness Gym`
@@ -20,8 +20,4 @@ export function mensajeRecordatorio(socio: SocioConEstado): string {
 export function linkWhatsapp(celular: string, mensaje?: string): string {
   const base = `https://wa.me/549${celular}`
   return mensaje ? `${base}?text=${encodeURIComponent(mensaje)}` : base
-}
-
-export function linkTelefono(celular: string): string {
-  return `tel:+549${celular}`
 }

@@ -5,14 +5,14 @@ import { EstadoBadge } from '../components/socios/EstadoBadge'
 import { Button } from '../components/ui/Button'
 import { ButtonLink } from '../components/ui/ButtonLink'
 import { EmptyState } from '../components/ui/EmptyState'
-import { IconCash, IconCheck, IconChevronRight, IconPhone, IconWhatsapp } from '../components/ui/icons'
+import { IconCash, IconCheck, IconChevronRight, IconWhatsapp } from '../components/ui/icons'
 import { Skeleton } from '../components/ui/Skeleton'
 import { usePagoModal } from '../hooks/usePagoModal'
 import { useSocios } from '../hooks/useSocios'
 import { formatearFecha } from '../lib/dates'
 import { PLAN_LABEL } from '../lib/etiquetas'
 import { iniciales, nombreCompleto } from '../lib/format'
-import { linkTelefono, linkWhatsapp, mensajeRecordatorio } from '../lib/whatsapp'
+import { linkWhatsapp, mensajeRecordatorio } from '../lib/whatsapp'
 import { ordenarSocios } from '../lib/filtros'
 import type { EstadoCuota } from '../types'
 
@@ -154,26 +154,26 @@ export function RecordatoriosPage() {
                   {mensajeRecordatorio(actual)}
                 </div>
 
-                <a
-                  href={linkWhatsapp(actual.celular, mensajeRecordatorio(actual))}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => marcar(actual.id)}
-                  className="mt-5 flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#25d366] text-base font-bold text-ink-950 transition active:scale-[0.97]"
-                >
-                  <IconWhatsapp className="text-2xl" /> Enviar y pasar al siguiente
-                </a>
+                {actual.celular ? (
+                  <a
+                    href={linkWhatsapp(actual.celular, mensajeRecordatorio(actual))}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => marcar(actual.id)}
+                    className="mt-5 flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#25d366] text-base font-bold text-ink-950 transition active:scale-[0.97]"
+                  >
+                    <IconWhatsapp className="text-2xl" /> Enviar y pasar al siguiente
+                  </a>
+                ) : (
+                  <p className="mt-5 rounded-2xl border border-dashed border-ink-700 px-4 py-4 text-center text-sm text-ink-400">
+                    No tiene celular cargado. Podés agregarlo editando el socio.
+                  </p>
+                )}
 
-                <div className="mt-3 grid grid-cols-3 gap-2">
+                <div className="mt-3 grid grid-cols-2 gap-2">
                   <Button variante="secondary" className="!px-2 text-sm" onClick={() => marcar(actual.id)}>
                     Saltear
                   </Button>
-                  <a
-                    href={linkTelefono(actual.celular)}
-                    className="flex min-h-12 items-center justify-center gap-1.5 rounded-2xl border border-ink-700 bg-ink-800 text-sm font-bold"
-                  >
-                    <IconPhone /> Llamar
-                  </a>
                   <Button
                     variante="secondary"
                     className="!px-2 text-sm"
