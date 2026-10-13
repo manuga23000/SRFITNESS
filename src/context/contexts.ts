@@ -1,5 +1,6 @@
 import type { User } from 'firebase/auth'
 import { createContext } from 'react'
+import type { Socio } from '../types'
 
 export interface AuthState {
   user: User | null
@@ -15,3 +16,11 @@ export interface ToastApi {
 }
 
 export const ToastContext = createContext<ToastApi>({ ok: () => {}, error: () => {}, info: () => {} })
+
+export interface SociosState {
+  socios: Socio[]
+  cargando: boolean
+  error: Error | null
+}
+
+export const SociosContext = createContext<SociosState>({ socios: [], cargando: true, error: null })
