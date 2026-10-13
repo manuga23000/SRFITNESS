@@ -119,6 +119,14 @@ Después del deploy, en el celular abrí la URL (`https://tu-proyecto.web.app`):
 - **Android (Chrome):** menú ⋮ → *Instalar app*, o desde **Ajustes** dentro de la app.
 - **iPhone (Safari):** Compartir → *Agregar a inicio*.
 
+## Deploy alternativo (Vercel)
+
+1. Importá el repositorio en Vercel. Detecta Vite solo: build `npm run build`, salida `dist`.
+2. En **Settings → Environment Variables** cargá las mismas variables `VITE_FIREBASE_*` de tu `.env.local`.
+3. En Firebase → **Authentication → Configuración → Dominios autorizados**, agregá el dominio de Vercel (ej: `sr-fitness.vercel.app`).
+
+`vercel.json` redirige todas las rutas a `index.html`. Nunca subas `node_modules` ni `.env.local` al repositorio (ya están en `.gitignore`).
+
 ## Aviso
 
 Este proyecto se desarrolló con asistencia de herramientas de inteligencia artificial. El código fue revisado y probado, pero conviene revisarlo antes de cambios importantes.
