@@ -91,6 +91,12 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
     const datos = validar()
     if (!datos) {
       navigator.vibrate?.(60)
+      // Lleva al primer campo con error (el encabezado fijo tapa la parte de arriba).
+      requestAnimationFrame(() => {
+        const campo = document.querySelector<HTMLElement>('form [data-error="true"]')
+        campo?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        campo?.querySelector<HTMLElement>('input, textarea')?.focus({ preventScroll: true })
+      })
       return
     }
     setGuardando(true)
@@ -242,7 +248,7 @@ function Campo({
   children: ReactNode
 }) {
   return (
-    <div>
+    <div data-error={Boolean(error)}>
       <label htmlFor={id} className="label">
         {label}
       </label>

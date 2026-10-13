@@ -52,7 +52,7 @@ export function FiltrosSocios({ filtros, onChange, conteoEstados }: Props) {
           type="search"
           inputMode="search"
           enterKeyHint="search"
-          placeholder="Buscar por nombre, apellido o celular"
+          placeholder="Buscar nombre o celular"
           className="field !rounded-full pr-11 pl-11"
           value={filtros.busqueda}
           onChange={(e) => onChange({ busqueda: e.target.value })}

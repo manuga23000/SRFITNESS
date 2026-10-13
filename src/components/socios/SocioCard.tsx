@@ -49,23 +49,26 @@ export function SocioCard({ socio, indice = 0, acciones }: Props) {
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-[17px] leading-tight font-bold">{nombreCompleto(socio)}</h3>
-          <p className="mt-0.5 flex items-center gap-1.5 text-xs text-ink-400">
-            <span className="rounded-md bg-ink-800 px-1.5 py-0.5 font-semibold text-ink-300">
+          <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+            {socio.activo ? (
+              <EstadoBadge estado={socio.estado} diasRestantes={socio.diasRestantes} />
+            ) : (
+              <span className="rounded-full bg-ink-800 px-2.5 py-1 text-xs font-bold text-ink-400 ring-1 ring-ink-700 ring-inset">
+                De baja
+              </span>
+            )}
+            <span className="rounded-full bg-ink-800 px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-ink-300">
               {PLAN_LABEL[socio.plan]}
             </span>
-            <span>Vence {formatearFecha(socio.fechaVencimiento)}</span>
-          </p>
+          </div>
         </div>
-        <div className="flex flex-col items-end gap-1">
-          {socio.activo ? (
-            <EstadoBadge estado={socio.estado} diasRestantes={socio.diasRestantes} />
-          ) : (
-            <span className="rounded-full bg-ink-800 px-2.5 py-1 text-xs font-bold text-ink-400 ring-1 ring-ink-700 ring-inset">
-              De baja
-            </span>
-          )}
-          <IconChevronRight className="text-ink-600" />
+        <div className="flex shrink-0 flex-col items-end gap-0.5 text-right">
+          <span className="text-[10px] font-semibold tracking-wider text-ink-400 uppercase">Vence</span>
+          <span className="font-display text-lg leading-none tracking-wide tabular-nums">
+            {formatearFecha(socio.fechaVencimiento)}
+          </span>
         </div>
+        <IconChevronRight className="-mr-1 shrink-0 text-ink-600" />
       </Link>
 
       {acciones ? (
