@@ -45,7 +45,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={t.id}
             role={t.tipo === 'error' ? 'alert' : 'status'}
-            className={`animate-pop pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold shadow-2xl shadow-black/60 ${estilos[t.tipo]}`}
+            className={`pointer-events-auto flex w-full max-w-sm animate-pop items-center gap-3 rounded-2xl border px-4 py-3 text-sm font-semibold shadow-2xl shadow-black/60 ${estilos[t.tipo]}`}
           >
             <span className="dot h-2.5 w-2.5 shrink-0 rounded-full" />
             {t.mensaje}

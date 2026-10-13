@@ -99,9 +99,7 @@ export function SociosPage() {
             icono={<IconUsers />}
             titulo="Todavía no hay socios"
             texto="Cargá el primero y empezá a llevar el control de las cuotas."
-            accion={
-              <ButtonLink to="/socios/nuevo">Agregar socio</ButtonLink>
-            }
+            accion={<ButtonLink to="/socios/nuevo">Agregar socio</ButtonLink>}
           />
         )}
       </section>

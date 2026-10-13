@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { usePagoModal } from '../../hooks/usePagoModal'
 import { formatearFecha } from '../../lib/dates'
 import { iniciales, nombreCompleto } from '../../lib/format'
 import { linkTelefono, linkWhatsapp, mensajeRecordatorio } from '../../lib/whatsapp'
@@ -10,7 +11,6 @@ import { PLAN_LABEL } from '../../lib/etiquetas'
 
 interface Props {
   socio: SocioConEstado
-  onPagar?: (socio: SocioConEstado) => void
   indice?: number
   /** Reemplaza la fila de acciones (ej: "Reactivar" en socios dados de baja). */
   acciones?: ReactNode
@@ -28,10 +28,11 @@ const avatar: Record<SocioConEstado['estado'], string> = {
   vencido: 'bg-danger/15 text-danger',
 }
 
-export function SocioCard({ socio, onPagar, indice = 0, acciones }: Props) {
+export function SocioCard({ socio, indice = 0, acciones }: Props) {
+  const { abrirPago } = usePagoModal()
   return (
     <article
-      className="animate-fade-up relative overflow-hidden rounded-3xl border border-ink-800 bg-ink-900 transition hover:border-ink-700"
+      className="relative animate-fade-up overflow-hidden rounded-3xl border border-ink-800 bg-ink-900 transition hover:border-ink-700"
       style={{ animationDelay: `${Math.min(indice, 10) * 30}ms` }}
     >
       {socio.activo && (
@@ -71,10 +72,9 @@ export function SocioCard({ socio, onPagar, indice = 0, acciones }: Props) {
         <div className="px-4 pb-4">{acciones}</div>
       ) : (
         socio.activo && (
-        <div className="grid grid-cols-[1fr_auto_auto] gap-2 px-4 pb-4">
-          {onPagar ? (
+          <div className="grid grid-cols-[1fr_auto_auto] gap-2 px-4 pb-4">
             <button
-              onClick={() => onPagar(socio)}
+              onClick={() => abrirPago(socio)}
               className={`flex min-h-12 items-center justify-center gap-2 rounded-2xl text-sm font-bold transition active:scale-[0.97] ${
                 socio.estado === 'al-dia'
                   ? 'border border-ink-700 bg-ink-800 text-white hover:bg-ink-700'
@@ -84,26 +84,23 @@ export function SocioCard({ socio, onPagar, indice = 0, acciones }: Props) {
               <IconCash className="text-lg" />
               Registrar pago
             </button>
-          ) : (
-            <span />
-          )}
-          <a
-            href={linkWhatsapp(socio.celular, mensajeRecordatorio(socio))}
-            target="_blank"
-            rel="noreferrer"
-            aria-label={`WhatsApp a ${socio.nombre}`}
-            className="grid h-12 w-12 place-items-center rounded-2xl bg-[#25d366]/15 text-2xl text-[#25d366] transition hover:bg-[#25d366]/25 active:scale-90"
-          >
-            <IconWhatsapp />
-          </a>
-          <a
-            href={linkTelefono(socio.celular)}
-            aria-label={`Llamar a ${socio.nombre}`}
-            className="grid h-12 w-12 place-items-center rounded-2xl bg-ink-800 text-xl text-ink-300 transition hover:bg-ink-700 hover:text-white active:scale-90"
-          >
-            <IconPhone />
-          </a>
-        </div>
+            <a
+              href={linkWhatsapp(socio.celular, mensajeRecordatorio(socio))}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={`WhatsApp a ${socio.nombre}`}
+              className="grid h-12 w-12 place-items-center rounded-2xl bg-[#25d366]/15 text-2xl text-[#25d366] transition hover:bg-[#25d366]/25 active:scale-90"
+            >
+              <IconWhatsapp />
+            </a>
+            <a
+              href={linkTelefono(socio.celular)}
+              aria-label={`Llamar a ${socio.nombre}`}
+              className="grid h-12 w-12 place-items-center rounded-2xl bg-ink-800 text-xl text-ink-300 transition hover:bg-ink-700 hover:text-white active:scale-90"
+            >
+              <IconPhone />
+            </a>
+          </div>
         )
       )}
     </article>

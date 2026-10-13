@@ -69,7 +69,7 @@ export function FiltrosSocios({ filtros, onChange, conteoEstados }: Props) {
         )}
       </div>
 
-      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:px-0">
+      <div className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
         <Chip activo={filtros.estado === null} onClick={() => onChange({ estado: null })}>
           Todos
         </Chip>
@@ -85,7 +85,7 @@ export function FiltrosSocios({ filtros, onChange, conteoEstados }: Props) {
         ))}
       </div>
 
-      <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] md:mx-0 md:px-0">
+      <div className="-mx-4 flex [scrollbar-width:none] items-center gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:px-0">
         {PLANES.map((p) => (
           <Chip key={p} activo={filtros.plan === p} onClick={() => onChange({ plan: filtros.plan === p ? null : p })}>
             {PLAN_LABEL[p]}

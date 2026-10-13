@@ -1,8 +1,7 @@
 export type Variante = 'primary' | 'secondary' | 'ghost' | 'danger' | 'whatsapp'
 
 const variantes: Record<Variante, string> = {
-  primary:
-    'bg-lime-neon text-ink-950 hover:bg-lime-soft shadow-[0_8px_30px_-10px] shadow-lime-neon/60',
+  primary: 'bg-lime-neon text-ink-950 hover:bg-lime-soft shadow-[0_8px_30px_-10px] shadow-lime-neon/60',
   secondary: 'bg-ink-800 text-white border border-ink-700 hover:bg-ink-700',
   ghost: 'bg-transparent text-ink-300 hover:bg-ink-800 hover:text-white',
   danger: 'bg-danger/15 text-danger border border-danger/30 hover:bg-danger/25',

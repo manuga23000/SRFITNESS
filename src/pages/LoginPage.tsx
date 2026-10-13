@@ -37,9 +37,9 @@ export function LoginPage() {
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-6 py-10">
       <div className="pointer-events-none absolute -top-40 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-lime-neon/20 blur-[120px]" />
-      <div className="pointer-events-none absolute -bottom-48 -right-24 h-80 w-80 rounded-full bg-lime-neon/10 blur-[110px]" />
+      <div className="pointer-events-none absolute -right-24 -bottom-48 h-80 w-80 rounded-full bg-lime-neon/10 blur-[110px]" />
 
-      <div className="animate-fade-up relative w-full max-w-sm">
+      <div className="relative w-full max-w-sm animate-fade-up">
         <div className="mb-10 flex justify-center">
           <Logo size="lg" />
         </div>
@@ -84,7 +84,7 @@ export function LoginPage() {
             </p>
           )}
 
-          <Button type="submit" bloque cargando={enviando} className="mt-2 min-h-14 text-base uppercase tracking-wide">
+          <Button type="submit" bloque cargando={enviando} className="mt-2 min-h-14 text-base tracking-wide uppercase">
             Ingresar
           </Button>
         </form>

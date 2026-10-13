@@ -26,20 +26,40 @@
   --animate-shimmer: shimmer 1.4s linear infinite;
 
   @keyframes fade-up {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   @keyframes pop {
-    from { opacity: 0; transform: scale(0.94); }
-    to { opacity: 1; transform: scale(1); }
+    from {
+      opacity: 0;
+      transform: scale(0.94);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
   }
   @keyframes slide-up {
-    from { transform: translateY(100%); }
-    to { transform: translateY(0); }
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
   }
   @keyframes shimmer {
-    from { background-position: -200% 0; }
-    to { background-position: 200% 0; }
+    from {
+      background-position: -200% 0;
+    }
+    to {
+      background-position: 200% 0;
+    }
   }
 }
 
@@ -65,7 +85,7 @@
 
 @layer components {
   .field {
-    @apply w-full rounded-2xl border border-ink-700 bg-ink-850 px-4 py-3.5 text-white placeholder:text-ink-400 transition outline-none focus:border-lime-neon focus:ring-2 focus:ring-lime-neon/25;
+    @apply w-full rounded-2xl border border-ink-700 bg-ink-850 px-4 py-3.5 text-white transition outline-none placeholder:text-ink-400 focus:border-lime-neon focus:ring-2 focus:ring-lime-neon/25;
   }
   .label {
     @apply mb-1.5 block text-xs font-semibold tracking-wider text-ink-300 uppercase;

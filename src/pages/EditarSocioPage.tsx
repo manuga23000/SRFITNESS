@@ -34,7 +34,13 @@ export function EditarSocioPage() {
       <PageHeader titulo="Editar socio" subtitulo={socio && `${socio.nombre} ${socio.apellido}`} volver />
       <section className="px-4 pt-5 md:px-6">
         {socio ? (
-          <SocioForm key={socio.id} inicial={socio} precios={precios} textoGuardar="Guardar cambios" onGuardar={guardar} />
+          <SocioForm
+            key={socio.id}
+            inicial={socio}
+            precios={precios}
+            textoGuardar="Guardar cambios"
+            onGuardar={guardar}
+          />
         ) : (
           <div className="space-y-4">
             <Skeleton className="h-14" />

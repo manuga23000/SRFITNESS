@@ -10,7 +10,7 @@ const items = [
 
 export function BottomNav() {
   return (
-    <nav className="pb-safe fixed inset-x-0 bottom-0 z-40 border-t border-ink-800 bg-ink-950/90 backdrop-blur-xl md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-ink-800 bg-ink-950/90 pb-safe backdrop-blur-xl md:hidden">
       <ul className="mx-auto grid max-w-lg grid-cols-4">
         {items.map(({ to, label, Icon, end }) => (
           <li key={to}>

@@ -6,8 +6,17 @@ import { HistorialPagos } from '../components/socios/HistorialPagos'
 import { PLAN_LABEL } from '../lib/etiquetas'
 import { Button } from '../components/ui/Button'
 import { ConfirmDialog } from '../components/ui/ConfirmDialog'
-import { IconEdit, IconPhone, IconTrash, IconUserCheck, IconUserOff, IconWhatsapp } from '../components/ui/icons'
+import {
+  IconCash,
+  IconEdit,
+  IconPhone,
+  IconTrash,
+  IconUserCheck,
+  IconUserOff,
+  IconWhatsapp,
+} from '../components/ui/icons'
 import { Skeleton } from '../components/ui/Skeleton'
+import { usePagoModal } from '../hooks/usePagoModal'
 import { useSocio } from '../hooks/useSocios'
 import { useToast } from '../hooks/useToast'
 import { formatearFecha } from '../lib/dates'
@@ -26,6 +35,7 @@ export function DetalleSocioPage() {
   const { id } = useParams()
   const { socio, cargando } = useSocio(id)
   const toast = useToast()
+  const { abrirPago } = usePagoModal()
   const navigate = useNavigate()
   const [dialogo, setDialogo] = useState<'baja' | 'eliminar' | null>(null)
   const [eliminado, setEliminado] = useState(false)
@@ -128,6 +138,15 @@ export function DetalleSocioPage() {
               </p>
             )}
           </div>
+
+          <Button
+            bloque
+            icono={<IconCash className="text-xl" />}
+            onClick={() => abrirPago(socio)}
+            className="min-h-14 text-base tracking-wide uppercase"
+          >
+            Registrar pago
+          </Button>
 
           {/* Acciones de contacto */}
           <div className="grid grid-cols-2 gap-3">

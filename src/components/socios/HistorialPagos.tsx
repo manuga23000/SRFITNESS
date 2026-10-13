@@ -36,7 +36,7 @@ export function HistorialPagos({ socioId }: { socioId: string }) {
           {pagos.map((p, i) => (
             <li
               key={p.id}
-              className="animate-fade-up flex items-center gap-3 rounded-2xl border border-ink-800 bg-ink-900 px-4 py-3"
+              className="flex animate-fade-up items-center gap-3 rounded-2xl border border-ink-800 bg-ink-900 px-4 py-3"
               style={{ animationDelay: `${Math.min(i, 8) * 25}ms` }}
             >
               <div

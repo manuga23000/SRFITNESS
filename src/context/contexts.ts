@@ -1,6 +1,6 @@
 import type { User } from 'firebase/auth'
 import { createContext } from 'react'
-import type { Socio } from '../types'
+import type { Socio, SocioConEstado } from '../types'
 
 export interface AuthState {
   user: User | null
@@ -24,3 +24,9 @@ export interface SociosState {
 }
 
 export const SociosContext = createContext<SociosState>({ socios: [], cargando: true, error: null })
+
+export interface PagoModalApi {
+  abrirPago: (socio: SocioConEstado) => void
+}
+
+export const PagoModalContext = createContext<PagoModalApi>({ abrirPago: () => {} })

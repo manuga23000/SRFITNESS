@@ -27,12 +27,15 @@ export function Modal({ abierto, onCerrar, titulo, children }: Props) {
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6">
-      <div className="absolute inset-0 animate-[fade-up_0.2s_ease-out_both] bg-black/70 backdrop-blur-sm" onClick={onCerrar} />
+      <div
+        className="absolute inset-0 animate-[fade-up_0.2s_ease-out_both] bg-black/70 backdrop-blur-sm"
+        onClick={onCerrar}
+      />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={titulo}
-        className="animate-slide-up sm:animate-pop relative flex max-h-[92dvh] w-full flex-col rounded-t-3xl border-t border-ink-700 bg-ink-900 shadow-2xl sm:max-w-md sm:rounded-3xl sm:border"
+        className="relative flex max-h-[92dvh] w-full animate-slide-up flex-col rounded-t-3xl border-t border-ink-700 bg-ink-900 shadow-2xl sm:max-w-md sm:animate-pop sm:rounded-3xl sm:border"
       >
         <div className="mx-auto mt-2.5 h-1.5 w-12 rounded-full bg-ink-700 sm:hidden" />
         <div className="flex items-center justify-between px-5 pt-3 pb-2 sm:pt-5">
@@ -45,7 +48,7 @@ export function Modal({ abierto, onCerrar, titulo, children }: Props) {
             <IconX />
           </button>
         </div>
-        <div className="pb-safe overflow-y-auto px-5 pt-2">
+        <div className="overflow-y-auto px-5 pt-2 pb-safe">
           <div className="pb-5">{children}</div>
         </div>
       </div>

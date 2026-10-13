@@ -65,11 +65,7 @@ export function iniciales(s: { nombre: string; apellido: string }): string {
 
 /** Para búsquedas sin importar mayúsculas ni tildes. */
 export function normalizarTexto(texto: string): string {
-  return texto
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .trim()
+  return texto.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
 }
 
 /** "Juan Perez" -> "Juan Perez" con mayúscula inicial en cada palabra. */

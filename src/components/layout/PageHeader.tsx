@@ -14,7 +14,7 @@ interface Props {
 export function PageHeader({ titulo, subtitulo, volver, acciones }: Props) {
   const navigate = useNavigate()
   return (
-    <header className="pt-safe sticky top-0 z-30 border-b border-ink-800/80 bg-ink-950/85 backdrop-blur-xl md:static md:border-0 md:bg-transparent md:backdrop-blur-none">
+    <header className="sticky top-0 z-30 border-b border-ink-800/80 bg-ink-950/85 pt-safe backdrop-blur-xl md:static md:border-0 md:bg-transparent md:backdrop-blur-none">
       <div className="flex min-h-16 items-center gap-3 px-4 py-3 md:px-6 md:pt-8">
         {volver && (
           <button

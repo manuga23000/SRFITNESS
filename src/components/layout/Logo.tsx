@@ -14,12 +14,8 @@ export function Logo({ size = 'sm' }: Props) {
         SR
       </div>
       <div className="leading-none">
-        <div className={`font-display tracking-wide text-white ${grande ? 'text-5xl' : 'text-2xl'}`}>
-          SR FITNESS
-        </div>
-        <div
-          className={`font-display tracking-[0.35em] text-lime-neon ${grande ? 'text-xl' : 'text-[0.8rem]'}`}
-        >
+        <div className={`font-display tracking-wide text-white ${grande ? 'text-5xl' : 'text-2xl'}`}>SR FITNESS</div>
+        <div className={`font-display tracking-[0.35em] text-lime-neon ${grande ? 'text-xl' : 'text-[0.8rem]'}`}>
           GYM
         </div>
       </div>

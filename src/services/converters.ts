@@ -11,7 +11,9 @@ function aPlan(valor: unknown): Plan {
   return PLANES.includes(valor as Plan) ? (valor as Plan) : 'libre'
 }
 
-export function socioDesdeDoc(snap: QueryDocumentSnapshot<DocumentData> | { id: string; data: () => DocumentData }): Socio {
+export function socioDesdeDoc(
+  snap: QueryDocumentSnapshot<DocumentData> | { id: string; data: () => DocumentData },
+): Socio {
   const d = snap.data()
   const fechaUltimoPago = aFecha(d.fechaUltimoPago) ?? new Date(0)
   return {

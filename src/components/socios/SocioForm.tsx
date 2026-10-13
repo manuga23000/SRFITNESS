@@ -13,7 +13,9 @@ interface Props {
   onGuardar: (datos: SocioInput) => Promise<void>
 }
 
-type Errores = Partial<Record<'nombre' | 'apellido' | 'celular' | 'fechaUltimoPago' | 'fechaVencimiento' | 'monto', string>>
+type Errores = Partial<
+  Record<'nombre' | 'apellido' | 'celular' | 'fechaUltimoPago' | 'fechaVencimiento' | 'monto', string>
+>
 
 export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) {
   const esEdicion = Boolean(inicial)
@@ -22,9 +24,7 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
   const [celular, setCelular] = useState(inicial?.celular ?? '')
   const [plan, setPlan] = useState<Plan>(inicial?.plan ?? '3 veces')
   const [fechaPago, setFechaPago] = useState(aInputDate(inicial?.fechaUltimoPago ?? hoy()))
-  const [vencimiento, setVencimiento] = useState(
-    aInputDate(inicial?.fechaVencimiento ?? vencimientoPorDefecto(hoy())),
-  )
+  const [vencimiento, setVencimiento] = useState(aInputDate(inicial?.fechaVencimiento ?? vencimientoPorDefecto(hoy())))
   // Mientras no se toque a mano, el vencimiento sigue a la fecha de pago (+1 mes).
   const [vencimientoManual, setVencimientoManual] = useState(
     () =>
@@ -32,9 +32,7 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
       inicial.fechaVencimiento.getTime() !== vencimientoPorDefecto(inicial.fechaUltimoPago).getTime(),
   )
   const [mostrarVencimiento, setMostrarVencimiento] = useState(esEdicion)
-  const [monto, setMonto] = useState(
-    montoParaInput(inicial ? inicial.montoUltimoPago : precios[plan] || undefined),
-  )
+  const [monto, setMonto] = useState(montoParaInput(inicial ? inicial.montoUltimoPago : precios[plan] || undefined))
   const [montoManual, setMontoManual] = useState(esEdicion)
   const [notas, setNotas] = useState(inicial?.notas ?? '')
   const [errores, setErrores] = useState<Errores>({})
@@ -250,7 +248,7 @@ function Campo({
       </label>
       {children}
       {error ? (
-        <p className="animate-pop mt-1.5 text-xs font-semibold text-danger">{error}</p>
+        <p className="mt-1.5 animate-pop text-xs font-semibold text-danger">{error}</p>
       ) : (
         ayuda && <p className="mt-1.5 text-xs text-ink-400">{ayuda}</p>
       )}

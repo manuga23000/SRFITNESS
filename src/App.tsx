@@ -3,7 +3,9 @@ import { AppLayout } from './components/layout/AppLayout'
 import { ProtectedRoute } from './components/layout/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 import { ToastProvider } from './context/ToastContext'
+import { PagoModalProvider } from './context/PagoModalProvider'
 import { SociosProvider } from './context/SociosContext'
+import { AjustesPage } from './pages/AjustesPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DetalleSocioPage } from './pages/DetalleSocioPage'
 import { EditarSocioPage } from './pages/EditarSocioPage'
@@ -23,7 +25,9 @@ export default function App() {
               <Route
                 element={
                   <SociosProvider>
-                    <AppLayout />
+                    <PagoModalProvider>
+                      <AppLayout />
+                    </PagoModalProvider>
                   </SociosProvider>
                 }
               >
@@ -33,6 +37,7 @@ export default function App() {
                 <Route path="socios/:id" element={<DetalleSocioPage />} />
                 <Route path="socios/:id/editar" element={<EditarSocioPage />} />
                 <Route path="inactivos" element={<InactivosPage />} />
+                <Route path="ajustes" element={<AjustesPage />} />
               </Route>
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
