@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Solo usuarios autenticados (el profe) pueden leer y escribir.
+    // No hay registro público: las cuentas se crean desde la consola de Firebase.
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
