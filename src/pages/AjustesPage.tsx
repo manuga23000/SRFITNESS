@@ -2,10 +2,11 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Button } from '../components/ui/Button'
-import { IconChevronRight, IconLogout, IconUserOff } from '../components/ui/icons'
+import { IconChevronRight, IconDumbbell, IconLogout, IconUserOff } from '../components/ui/icons'
 import { MontoInput } from '../components/ui/MontoInput'
 import { Skeleton } from '../components/ui/Skeleton'
 import { useAuth } from '../hooks/useAuth'
+import { useInstalarApp } from '../hooks/useInstalarApp'
 import { usePrecios } from '../hooks/usePrecios'
 import { useSocios } from '../hooks/useSocios'
 import { useToast } from '../hooks/useToast'
@@ -18,6 +19,7 @@ export function AjustesPage() {
   const { user, cerrarSesion } = useAuth()
   const { precios, cargando } = usePrecios()
   const { resumen } = useSocios()
+  const { puedeInstalar, instalada, esIOS, instalar } = useInstalarApp()
 
   return (
     <>
@@ -37,6 +39,27 @@ export function AjustesPage() {
             <FormPrecios key={JSON.stringify(precios)} precios={precios} />
           )}
         </div>
+
+        {!instalada && (puedeInstalar || esIOS) && (
+          <div className="flex items-center gap-4 rounded-3xl border border-lime-neon/30 bg-lime-neon/5 p-4">
+            <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-lime-neon text-2xl text-ink-950">
+              <IconDumbbell />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="font-bold">Instalá la app en el celu</p>
+              <p className="text-xs text-ink-400">
+                {puedeInstalar
+                  ? 'Abrila como cualquier app, sin entrar al navegador.'
+                  : 'En Safari tocá Compartir y después "Agregar a inicio".'}
+              </p>
+            </div>
+            {puedeInstalar && (
+              <Button className="!min-h-10 !px-4 text-sm" onClick={instalar}>
+                Instalar
+              </Button>
+            )}
+          </div>
+        )}
 
         <div className="space-y-3">
           <h2 className="font-display text-2xl tracking-wide">Cuenta</h2>
