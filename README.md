@@ -81,7 +81,7 @@ Con ese email y contraseña se entra a la app. Repetí el paso si querés más d
 
 ## 3. Correr en local
 
-Requiere Node 20 o superior.
+Requiere **Node 24 o superior** (la versión LTS de https://nodejs.org). Con versiones más viejas `npm run dev` no arranca.
 
 ```bash
 npm install
