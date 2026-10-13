@@ -7,7 +7,7 @@ export interface Socio {
   id: string
   nombre: string
   apellido: string
-  /** 10 dígitos: código de área sin 0 + número sin 15. Ej: 3364123456 */
+  /** Opcional (vacío si no se cargó). 10 dígitos: código de área sin 0 + número sin 15. Ej: 3364123456 */
   celular: string
   plan: Plan
   fechaUltimoPago: Date

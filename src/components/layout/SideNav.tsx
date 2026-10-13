@@ -25,7 +25,9 @@ export function SideNav() {
             end={end}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition ${
-                isActive ? 'bg-lime-neon text-ink-950' : 'text-ink-300 hover:bg-ink-800 hover:text-white'
+                isActive
+                  ? 'bg-lime-neon/15 text-lime-neon ring-1 ring-lime-neon/40 ring-inset'
+                  : 'text-ink-300 hover:bg-ink-800 hover:text-white'
               }`
             }
           >

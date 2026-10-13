@@ -6,22 +6,14 @@ import { HistorialPagos } from '../components/socios/HistorialPagos'
 import { PLAN_LABEL } from '../lib/etiquetas'
 import { Button } from '../components/ui/Button'
 import { ConfirmDialog } from '../components/ui/ConfirmDialog'
-import {
-  IconCash,
-  IconEdit,
-  IconPhone,
-  IconTrash,
-  IconUserCheck,
-  IconUserOff,
-  IconWhatsapp,
-} from '../components/ui/icons'
+import { IconCash, IconEdit, IconTrash, IconUserCheck, IconUserOff, IconWhatsapp } from '../components/ui/icons'
 import { Skeleton } from '../components/ui/Skeleton'
 import { usePagoModal } from '../hooks/usePagoModal'
 import { useSocio } from '../hooks/useSocios'
 import { useToast } from '../hooks/useToast'
 import { formatearFecha } from '../lib/dates'
 import { formatearCelular, formatearMonto, iniciales, nombreCompleto } from '../lib/format'
-import { linkTelefono, linkWhatsapp, mensajeRecordatorio } from '../lib/whatsapp'
+import { linkWhatsapp, mensajeRecordatorio } from '../lib/whatsapp'
 import { cambiarActivo, eliminarSocio } from '../services/sociosService'
 import { SocioNoEncontrado } from './SocioNoEncontrado'
 
@@ -127,7 +119,7 @@ export function DetalleSocioPage() {
 
             <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
               <Dato label="Plan" valor={PLAN_LABEL[socio.plan]} />
-              <Dato label="Celular" valor={formatearCelular(socio.celular)} />
+              <Dato label="Celular" valor={socio.celular ? formatearCelular(socio.celular) : '—'} />
               <Dato label="Último pago" valor={formatearFecha(socio.fechaUltimoPago)} />
               <Dato label="Monto" valor={formatearMonto(socio.montoUltimoPago)} />
             </dl>
@@ -148,8 +140,7 @@ export function DetalleSocioPage() {
             Registrar pago
           </Button>
 
-          {/* Acciones de contacto */}
-          <div className="grid grid-cols-2 gap-3">
+          {socio.celular && (
             <a
               href={linkWhatsapp(socio.celular, mensajeRecordatorio(socio))}
               target="_blank"
@@ -158,13 +149,7 @@ export function DetalleSocioPage() {
             >
               <IconWhatsapp className="text-xl" /> WhatsApp
             </a>
-            <a
-              href={linkTelefono(socio.celular)}
-              className="flex min-h-14 items-center justify-center gap-2 rounded-2xl border border-ink-700 bg-ink-800 font-bold transition active:scale-[0.97]"
-            >
-              <IconPhone className="text-xl" /> Llamar
-            </a>
-          </div>
+          )}
 
           <HistorialPagos socioId={socio.id} />
 

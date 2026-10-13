@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { StatCard } from '../components/dashboard/StatCard'
-import { Fab } from '../components/layout/Fab'
 import { PageHeader } from '../components/layout/PageHeader'
 import { SocioCard } from '../components/socios/SocioCard'
 import { ButtonLink } from '../components/ui/ButtonLink'
@@ -161,8 +160,6 @@ export function DashboardPage() {
           )}
         </div>
       </section>
-
-      <Fab />
     </>
   )
 }

@@ -63,9 +63,8 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
     const fVenc = desdeInputDate(vencimiento)
     const montoNum = parsearMonto(monto)
 
-    if (nombre.trim().length < 2) e.nombre = 'Ingresá el nombre'
-    if (apellido.trim().length < 2) e.apellido = 'Ingresá el apellido'
-    if (!celularValido(cel)) e.celular = 'Con código de área, sin 0 ni 15 (ej: 3364123456)'
+    if (!nombre.trim() && !apellido.trim()) e.nombre = 'Ingresá al menos el nombre o el apellido'
+    if (cel && !celularValido(cel)) e.celular = 'Con código de área, sin 0 ni 15 (ej: 3364123456)'
     if (!fPago) e.fechaUltimoPago = 'Elegí la fecha de pago'
     else if (fPago > hoy()) e.fechaUltimoPago = 'La fecha de pago no puede ser futura'
     if (!fVenc) e.fechaVencimiento = 'Elegí la fecha de vencimiento'
@@ -136,7 +135,12 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
         </Campo>
       </div>
 
-      <Campo id="celular" label="Celular" error={errores.celular} ayuda="Código de área + número, sin 0 ni 15">
+      <Campo
+        id="celular"
+        label="Celular (opcional)"
+        error={errores.celular}
+        ayuda="Código de área + número, sin 0 ni 15"
+      >
         <input
           id="celular"
           type="tel"
