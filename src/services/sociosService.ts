@@ -43,6 +43,7 @@ export async function crearSocio(datos: SocioInput): Promise<string> {
     nombre: datos.nombre,
     apellido: datos.apellido,
     celular: datos.celular,
+    ...(datos.email && { email: datos.email }),
     plan: datos.plan,
     fechaUltimoPago: Timestamp.fromDate(datos.fechaUltimoPago),
     fechaVencimiento: Timestamp.fromDate(datos.fechaVencimiento),
@@ -68,6 +69,7 @@ export async function actualizarSocio(id: string, datos: SocioInput): Promise<vo
       nombre: datos.nombre,
       apellido: datos.apellido,
       celular: datos.celular,
+      email: datos.email || deleteField(),
       plan: datos.plan,
       fechaUltimoPago: Timestamp.fromDate(datos.fechaUltimoPago),
       fechaVencimiento: Timestamp.fromDate(datos.fechaVencimiento),
@@ -90,9 +92,10 @@ export async function cambiarActivo(id: string, activo: boolean): Promise<void> 
 
 /** Borra el socio y todo su historial de pagos. */
 export async function eliminarSocio(id: string): Promise<void> {
-  const pagos = await getDocs(pagosRef(id))
+  const [pagos, avisos] = await Promise.all([getDocs(pagosRef(id)), getDocs(collection(db, 'socios', id, 'avisos'))])
   const batch = writeBatch(db)
   pagos.docs.forEach((p) => batch.delete(p.ref))
+  avisos.docs.forEach((a) => batch.delete(a.ref))
   batch.delete(socioRef(id))
   await confirmarEscritura(batch.commit())
 }

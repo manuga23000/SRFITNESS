@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ],
@@ -24,5 +24,16 @@
         }
       ]
     }
-  ]
+  ],
+  "crons": [
+    {
+      "path": "/api/recordatorios",
+      "schedule": "0 12 * * *"
+    }
+  ],
+  "functions": {
+    "api/recordatorios.ts": {
+      "maxDuration": 60
+    }
+  }
 }

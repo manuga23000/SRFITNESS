@@ -21,6 +21,7 @@ export function socioDesdeDoc(
     nombre: d.nombre ?? '',
     apellido: d.apellido ?? '',
     celular: d.celular ?? '',
+    email: d.email || undefined,
     plan: aPlan(d.plan),
     fechaUltimoPago,
     fechaVencimiento: aFecha(d.fechaVencimiento) ?? fechaUltimoPago,

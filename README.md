@@ -14,6 +14,7 @@ Web app mobile-first para que el profe vea de un vistazo **quién pagó, cuándo
 - **Recordatorios:** recorre los vencidos (o los que están por vencer) uno por uno para mandarles el WhatsApp.
 - **Detalle** del socio con historial de pagos. **Dar de baja / reactivar** o eliminar con confirmación.
 - **Ajustes:** precios de cada plan (autocompletan el monto) y cierre de sesión.
+- **Recordatorios automáticos por email** 1 día antes del vencimiento y a 1, 3 y 7 días de vencida (ver más abajo).
 - **Resumen mensual en PDF:** cobrado en el mes (total y por plan), detalle de pagos, cuotas vencidas y por vencer, altas y bajas y listado de socios activos. Se descarga o se comparte desde el celu (Ajustes → Resumen mensual en PDF).
 - Datos en tiempo real (`onSnapshot`) y caché offline. Sin señal, la app sigue mostrando los datos y sincroniza cuando vuelve.
 
@@ -127,6 +128,47 @@ Después del deploy, en el celular abrí la URL (`https://tu-proyecto.web.app`):
 3. En Firebase → **Authentication → Configuración → Dominios autorizados**, agregá el dominio de Vercel (ej: `sr-fitness.vercel.app`).
 
 `vercel.json` redirige todas las rutas a `index.html`. Nunca subas `node_modules` ni `.env.local` al repositorio (ya están en `.gitignore`).
+
+## Recordatorios automáticos por email (EmailJS + Vercel Cron)
+
+Todos los días a las 9 (hora de Argentina) Vercel ejecuta `api/recordatorios.ts`, que manda un email a cada socio activo **con email cargado**:
+
+- 1 día antes del vencimiento (o el mismo día si ese día no corrió),
+- a 1, 3 y 7 días de vencida la cuota.
+
+Cada aviso sale una sola vez por vencimiento; cuando el socio paga, se reinician. Los enviados se ven en la ficha del socio. Desde **Ajustes → Recordatorios por email** se puede mandar un email de prueba, ver a quién le toca hoy o enviar en el momento.
+
+### 1. EmailJS
+1. En [EmailJS](https://dashboard.emailjs.com) conectá el servicio de email (ej: el Gmail del gym) y anotá el **Service ID** (ej: `service_sidjj7g`).
+2. **Email Templates → Create New Template**:
+   - **Subject:** `{{asunto}}`
+   - **To Email:** `{{to_email}}`
+   - **From Name:** `SR Fitness Gym`
+   - **Reply To:** el email del gym
+   - **Content:** tocá *Edit Content → Code Editor* y pegá el contenido de [`docs/emailjs-template.html`](docs/emailjs-template.html).
+   - Guardá y anotá el **Template ID**.
+3. **Account → General:** copiá la **Public Key**. En **Account → Security** activá *"Allow EmailJS API for non-browser applications"* y *"Use Private Key"*, y copiá la **Private Key**.
+
+El plan gratis de EmailJS permite 200 emails por mes: alcanza para unos 80 socios (no a todos les toca aviso todos los meses).
+
+### 2. Cuenta de servicio de Firebase
+Firebase → ⚙️ **Configuración del proyecto → Cuentas de servicio → Generar nueva clave privada**. Se descarga un `.json`: es una contraseña, no la subas al repositorio.
+
+### 3. Variables en Vercel
+En **Settings → Environment Variables** (además de las `VITE_FIREBASE_*`):
+
+| Variable | Valor |
+|---|---|
+| `EMAILJS_SERVICE_ID` | ej: `service_sidjj7g` |
+| `EMAILJS_TEMPLATE_ID` | el Template ID |
+| `EMAILJS_PUBLIC_KEY` | la Public Key |
+| `EMAILJS_PRIVATE_KEY` | la Private Key |
+| `FIREBASE_SERVICE_ACCOUNT` | el contenido completo del `.json` de la cuenta de servicio |
+| `CRON_SECRET` | una contraseña larga inventada (Vercel la usa para llamar al cron) |
+
+Después hacé **Redeploy**. El horario está en `vercel.json` (`0 12 * * *` = 12 UTC = 9 hs de Argentina).
+
+> Los recordatorios funcionan en la app publicada en Vercel; con `npm run dev` los botones de Ajustes muestran un aviso.
 
 ## Aviso
 

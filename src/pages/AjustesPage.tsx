@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { RecordatoriosEmail } from '../components/RecordatoriosEmail'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Button } from '../components/ui/Button'
 import { IconChevronRight, IconFile, IconLogout, IconUserOff } from '../components/ui/icons'
@@ -37,6 +38,8 @@ export function AjustesPage() {
             <FormPrecios key={JSON.stringify(precios)} precios={precios} />
           )}
         </div>
+
+        <RecordatoriosEmail />
 
         <div className="space-y-3">
           <h2 className="font-display text-2xl tracking-wide">Cuenta</h2>

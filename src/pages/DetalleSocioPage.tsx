@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { PageHeader } from '../components/layout/PageHeader'
 import { EstadoBadge } from '../components/socios/EstadoBadge'
+import { HistorialAvisos } from '../components/socios/HistorialAvisos'
 import { HistorialPagos } from '../components/socios/HistorialPagos'
 import { PLAN_LABEL } from '../lib/etiquetas'
 import { Button } from '../components/ui/Button'
@@ -122,6 +123,11 @@ export function DetalleSocioPage() {
               <Dato label="Celular" valor={socio.celular ? formatearCelular(socio.celular) : '—'} />
               <Dato label="Último pago" valor={formatearFecha(socio.fechaUltimoPago)} />
               <Dato label="Monto" valor={formatearMonto(socio.montoUltimoPago)} />
+              {socio.email && (
+                <div className="col-span-2">
+                  <Dato label="Email" valor={socio.email} />
+                </div>
+              )}
             </dl>
 
             {socio.notas && (
@@ -152,6 +158,7 @@ export function DetalleSocioPage() {
           )}
 
           <HistorialPagos socioId={socio.id} />
+          <HistorialAvisos socioId={socio.id} />
 
           {/* Zona de baja / eliminación */}
           <div className="grid grid-cols-2 gap-3 border-t border-ink-800 pt-6">

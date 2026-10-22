@@ -14,7 +14,7 @@ interface Props {
 }
 
 type Errores = Partial<
-  Record<'nombre' | 'apellido' | 'celular' | 'fechaUltimoPago' | 'fechaVencimiento' | 'monto', string>
+  Record<'nombre' | 'apellido' | 'celular' | 'email' | 'fechaUltimoPago' | 'fechaVencimiento' | 'monto', string>
 >
 
 export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) {
@@ -22,6 +22,7 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
   const [nombre, setNombre] = useState(inicial?.nombre ?? '')
   const [apellido, setApellido] = useState(inicial?.apellido ?? '')
   const [celular, setCelular] = useState(inicial?.celular ?? '')
+  const [email, setEmail] = useState(inicial?.email ?? '')
   const [plan, setPlan] = useState<Plan>(inicial?.plan ?? '3 veces')
   const [fechaPago, setFechaPago] = useState(aInputDate(inicial?.fechaUltimoPago ?? hoy()))
   const [vencimiento, setVencimiento] = useState(aInputDate(inicial?.fechaVencimiento ?? vencimientoPorDefecto(hoy())))
@@ -65,6 +66,8 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
 
     if (!nombre.trim() && !apellido.trim()) e.nombre = 'Ingresá al menos el nombre o el apellido'
     if (cel && !celularValido(cel)) e.celular = 'Con código de área, sin 0 ni 15 (ej: 3364123456)'
+    const mail = email.trim().toLowerCase()
+    if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) e.email = 'El email no es válido'
     if (!fPago) e.fechaUltimoPago = 'Elegí la fecha de pago'
     else if (fPago > hoy()) e.fechaUltimoPago = 'La fecha de pago no puede ser futura'
     if (!fVenc) e.fechaVencimiento = 'Elegí la fecha de vencimiento'
@@ -77,6 +80,7 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
       nombre: capitalizar(nombre),
       apellido: capitalizar(apellido),
       celular: cel,
+      email: mail || undefined,
       plan,
       fechaUltimoPago: fPago!,
       fechaVencimiento: fVenc!,
@@ -154,6 +158,25 @@ export function SocioForm({ inicial, precios, textoGuardar, onGuardar }: Props) 
             const n = normalizarCelular(celular)
             if (celularValido(n)) setCelular(n)
           }}
+        />
+      </Campo>
+
+      <Campo
+        id="email"
+        label="Email (opcional)"
+        error={errores.email}
+        ayuda="Para mandarle los recordatorios de la cuota"
+      >
+        <input
+          id="email"
+          type="email"
+          inputMode="email"
+          autoComplete="off"
+          autoCapitalize="none"
+          className={`field ${errores.email ? '!border-danger' : ''}`}
+          placeholder="juan@gmail.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
       </Campo>
 
