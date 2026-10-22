@@ -12,6 +12,7 @@ import { EditarSocioPage } from './pages/EditarSocioPage'
 import { InactivosPage } from './pages/InactivosPage'
 import { NuevoSocioPage } from './pages/NuevoSocioPage'
 import { RecordatoriosPage } from './pages/RecordatoriosPage'
+import { ResumenPage } from './pages/ResumenPage'
 import { SociosPage } from './pages/SociosPage'
 import { LoginPage } from './pages/LoginPage'
 
@@ -39,6 +40,7 @@ export default function App() {
                 <Route path="socios/:id/editar" element={<EditarSocioPage />} />
                 <Route path="inactivos" element={<InactivosPage />} />
                 <Route path="recordatorios" element={<RecordatoriosPage />} />
+                <Route path="resumen" element={<ResumenPage />} />
                 <Route path="ajustes" element={<AjustesPage />} />
               </Route>
             </Route>

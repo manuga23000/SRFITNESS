@@ -17,6 +17,8 @@ export interface Socio {
   activo: boolean
   creadoEn?: Date
   actualizadoEn?: Date
+  /** Cuándo se lo dio de baja (solo si está inactivo). */
+  fechaBaja?: Date
 }
 
 /** Datos que se cargan desde el formulario de alta/edición. */

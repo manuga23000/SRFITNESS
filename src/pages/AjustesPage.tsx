@@ -2,7 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Button } from '../components/ui/Button'
-import { IconChevronRight, IconLogout, IconUserOff } from '../components/ui/icons'
+import { IconChevronRight, IconFile, IconLogout, IconUserOff } from '../components/ui/icons'
 import { MontoInput } from '../components/ui/MontoInput'
 import { Skeleton } from '../components/ui/Skeleton'
 import { useAuth } from '../hooks/useAuth'
@@ -40,6 +40,14 @@ export function AjustesPage() {
 
         <div className="space-y-3">
           <h2 className="font-display text-2xl tracking-wide">Cuenta</h2>
+          <Link
+            to="/resumen"
+            className="flex items-center gap-3 rounded-2xl border border-ink-800 bg-ink-900 px-4 py-4 transition hover:border-ink-700 active:scale-[0.99]"
+          >
+            <IconFile className="text-xl text-lime-neon" />
+            <span className="flex-1 font-semibold">Resumen mensual en PDF</span>
+            <IconChevronRight className="text-ink-600" />
+          </Link>
           <Link
             to="/inactivos"
             className="flex items-center gap-3 rounded-2xl border border-ink-800 bg-ink-900 px-4 py-4 transition hover:border-ink-700 active:scale-[0.99]"

@@ -79,7 +79,13 @@ export async function actualizarSocio(id: string, datos: SocioInput): Promise<vo
 }
 
 export async function cambiarActivo(id: string, activo: boolean): Promise<void> {
-  await confirmarEscritura(updateDoc(socioRef(id), { activo, actualizadoEn: serverTimestamp() }))
+  await confirmarEscritura(
+    updateDoc(socioRef(id), {
+      activo,
+      fechaBaja: activo ? deleteField() : serverTimestamp(),
+      actualizadoEn: serverTimestamp(),
+    }),
+  )
 }
 
 /** Borra el socio y todo su historial de pagos. */

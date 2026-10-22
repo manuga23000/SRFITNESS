@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
-import { IconHome, IconLogout, IconPlus, IconSettings, IconUserOff, IconUsers } from '../ui/icons'
+import { IconFile, IconHome, IconLogout, IconPlus, IconSettings, IconUserOff, IconUsers } from '../ui/icons'
 import { Logo } from './Logo'
 
 const items = [
@@ -8,6 +8,7 @@ const items = [
   { to: '/socios', label: 'Socios', Icon: IconUsers, end: true },
   { to: '/socios/nuevo', label: 'Agregar socio', Icon: IconPlus, end: true },
   { to: '/inactivos', label: 'Inactivos', Icon: IconUserOff, end: true },
+  { to: '/resumen', label: 'Resumen PDF', Icon: IconFile, end: true },
   { to: '/ajustes', label: 'Ajustes', Icon: IconSettings, end: true },
 ]
 

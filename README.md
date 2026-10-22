@@ -14,6 +14,7 @@ Web app mobile-first para que el profe vea de un vistazo **quién pagó, cuándo
 - **Recordatorios:** recorre los vencidos (o los que están por vencer) uno por uno para mandarles el WhatsApp.
 - **Detalle** del socio con historial de pagos. **Dar de baja / reactivar** o eliminar con confirmación.
 - **Ajustes:** precios de cada plan (autocompletan el monto) y cierre de sesión.
+- **Resumen mensual en PDF:** cobrado en el mes (total y por plan), detalle de pagos, cuotas vencidas y por vencer, altas y bajas y listado de socios activos. Se descarga o se comparte desde el celu (Ajustes → Resumen mensual en PDF).
 - Datos en tiempo real (`onSnapshot`) y caché offline. Sin señal, la app sigue mostrando los datos y sincroniza cuando vuelve.
 
 ## Modelo de datos (Firestore)

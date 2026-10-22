@@ -1,4 +1,15 @@
-import { doc, onSnapshot, orderBy, query, serverTimestamp, Timestamp, writeBatch } from 'firebase/firestore'
+import {
+  deleteField,
+  doc,
+  getDocs,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  Timestamp,
+  where,
+  writeBatch,
+} from 'firebase/firestore'
 import { db } from '../lib/firebase'
 import type { Pago, PagoInput } from '../types'
 import { pagoDesdeDoc } from './converters'
@@ -29,7 +40,19 @@ export async function registrarPago(socioId: string, pago: PagoInput): Promise<v
     montoUltimoPago: pago.monto,
     plan: pago.plan,
     activo: true,
+    fechaBaja: deleteField(),
     actualizadoEn: serverTimestamp(),
   })
   await confirmarEscritura(batch.commit())
+}
+
+/** Pagos de un socio entre dos fechas (desde inclusive, hasta exclusive). */
+export async function obtenerPagosEntre(socioId: string, desde: Date, hasta: Date): Promise<Pago[]> {
+  const q = query(
+    pagosRef(socioId),
+    where('fecha', '>=', Timestamp.fromDate(desde)),
+    where('fecha', '<', Timestamp.fromDate(hasta)),
+  )
+  const snap = await getDocs(q)
+  return snap.docs.map(pagoDesdeDoc)
 }

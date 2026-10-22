@@ -30,6 +30,7 @@ export function socioDesdeDoc(
     // Mientras el serverTimestamp está pendiente (escritura local) llega como null.
     creadoEn: aFecha(d.creadoEn),
     actualizadoEn: aFecha(d.actualizadoEn),
+    fechaBaja: aFecha(d.fechaBaja),
   }
 }
 
