@@ -44,8 +44,20 @@ export async function llamarRecordatorios(params: {
   } catch {
     throw new Error('Sin conexión con el servidor')
   }
-  const data = (await res.json().catch(() => null)) as ResultadoRecordatorios | null
-  if (!data) throw new Error('Los recordatorios solo funcionan en la app publicada (Vercel)')
+  const texto = await res.text()
+  let data: ResultadoRecordatorios | null = null
+  try {
+    data = JSON.parse(texto) as ResultadoRecordatorios
+  } catch {
+    // La respuesta no es de nuestra función: o estamos en `npm run dev` o la función falló en Vercel.
+  }
+  if (!data) {
+    if (import.meta.env.DEV)
+      throw new Error('En la compu (npm run dev) no funciona: probalo en la app publicada en Vercel')
+    if (res.status === 404)
+      throw new Error('No se encontró la función de recordatorios en Vercel (404). Revisá el último deploy')
+    throw new Error(`Error del servidor (${res.status}): ${texto.slice(0, 120)}. Revisá Vercel > Logs`)
+  }
   if (!res.ok || data.error) throw new Error(data.error ?? `Error ${res.status}`)
   return data
 }
