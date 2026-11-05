@@ -7,19 +7,41 @@ import { Button } from './ui/Button'
 
 type Accion = 'prueba' | 'simular' | 'enviar'
 
+const CLAVE_EMAIL_PRUEBA = 'sr-email-prueba'
+
+function leerEmailPrueba(): string {
+  try {
+    return localStorage.getItem(CLAVE_EMAIL_PRUEBA) ?? ''
+  } catch {
+    return ''
+  }
+}
+
 /** Sección de Ajustes para probar y disparar a mano los recordatorios por email. */
 export function RecordatoriosEmail() {
   const { user } = useAuth()
   const { activos } = useSocios()
   const toast = useToast()
   const [accion, setAccion] = useState<Accion | null>(null)
+  // A dónde mandar el email de prueba (se recuerda en este dispositivo).
+  const [emailPrueba, setEmailPrueba] = useState(() => leerEmailPrueba() || user?.email || '')
+  const emailPruebaValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailPrueba.trim())
   const [resultado, setResultado] = useState<ResultadoRecordatorios | null>(null)
   const conEmail = activos.filter((s) => s.email).length
 
   async function ejecutar(a: Accion) {
     setAccion(a)
+    if (a === 'prueba') {
+      try {
+        localStorage.setItem(CLAVE_EMAIL_PRUEBA, emailPrueba.trim().toLowerCase())
+      } catch {
+        // sin storage: no pasa nada, solo no se recuerda
+      }
+    }
     try {
-      const r = await llamarRecordatorios(a === 'prueba' ? { prueba: user?.email ?? '' } : { simular: a === 'simular' })
+      const r = await llamarRecordatorios(
+        a === 'prueba' ? { prueba: emailPrueba.trim().toLowerCase() } : { simular: a === 'simular' },
+      )
       setResultado(a === 'prueba' ? null : r)
       if (a === 'prueba') toast.ok(`Email de prueba enviado a ${r.enviadoA}`)
       else if (a === 'enviar') toast.ok(`${r.enviados?.length ?? 0} recordatorios enviados`)
@@ -39,11 +61,26 @@ export function RecordatoriosEmail() {
           {conEmail} de {activos.length} socios activos tienen email cargado.
         </p>
       </div>
+      <div>
+        <label htmlFor="email-prueba" className="label">
+          Mandar el email de prueba a
+        </label>
+        <input
+          id="email-prueba"
+          type="email"
+          inputMode="email"
+          autoCapitalize="none"
+          className="field"
+          placeholder="tu@email.com"
+          value={emailPrueba}
+          onChange={(e) => setEmailPrueba(e.target.value)}
+        />
+      </div>
       <div className="grid gap-2 sm:grid-cols-3">
         <Button
           variante="secondary"
           cargando={accion === 'prueba'}
-          disabled={accion !== null || !user?.email}
+          disabled={accion !== null || !emailPruebaValido}
           onClick={() => ejecutar('prueba')}
         >
           Email de prueba
