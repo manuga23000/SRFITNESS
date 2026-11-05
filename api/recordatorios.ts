@@ -7,9 +7,7 @@
  * Avisos: 1 día antes del vencimiento y 1, 3 y 7 días después. Cada aviso se manda una sola
  * vez por vencimiento; si un día no corre, al siguiente se manda el que corresponda.
  */
-import { cert, getApps, initializeApp } from 'firebase-admin/app'
-import { getAuth } from 'firebase-admin/auth'
-import { FieldValue, getFirestore, Timestamp } from 'firebase-admin/firestore'
+import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const TZ = 'America/Argentina/Buenos_Aires'
 const GYM = 'SR Fitness Gym'
@@ -116,20 +114,36 @@ export function armarEmail(
 
 // ---------- Servicios externos
 
-function db() {
+/**
+ * firebase-admin se carga recién acá (y no arriba con import) para que, si algo falla
+ * al iniciarlo, el error llegue como respuesta a la app en vez de tumbar la función.
+ */
+async function admin() {
+  const [{ cert, getApps, initializeApp }, { getAuth }, { FieldValue, getFirestore, Timestamp }] = await Promise.all([
+    import('firebase-admin/app'),
+    import('firebase-admin/auth'),
+    import('firebase-admin/firestore'),
+  ])
   if (!getApps().length && process.env.FIRESTORE_EMULATOR_HOST) {
     // Desarrollo local con los emulators de Firebase.
     initializeApp({ projectId: process.env.GCLOUD_PROJECT ?? 'demo-srfitness' })
   }
   if (!getApps().length) {
     const raw = process.env.FIREBASE_SERVICE_ACCOUNT
-    if (!raw) throw new Error('Falta la variable FIREBASE_SERVICE_ACCOUNT')
-    const cuenta = JSON.parse(raw)
+    if (!raw) throw new Error('Falta la variable FIREBASE_SERVICE_ACCOUNT en Vercel')
+    let cuenta: Record<string, string>
+    try {
+      cuenta = JSON.parse(raw)
+    } catch {
+      throw new Error('FIREBASE_SERVICE_ACCOUNT no es un JSON válido: pegá el contenido completo del archivo .json')
+    }
     cuenta.private_key = String(cuenta.private_key).replace(/\\n/g, '\n')
     initializeApp({ credential: cert(cuenta) })
   }
-  return getFirestore()
+  return { firestore: getFirestore(), auth: getAuth(), FieldValue, Timestamp }
 }
+
+type Admin = Awaited<ReturnType<typeof admin>>
 
 async function enviarEmailJs(params: DatosEmail): Promise<void> {
   const faltan = ['EMAILJS_SERVICE_ID', 'EMAILJS_TEMPLATE_ID', 'EMAILJS_PUBLIC_KEY', 'EMAILJS_PRIVATE_KEY'].filter(
@@ -153,16 +167,15 @@ async function enviarEmailJs(params: DatosEmail): Promise<void> {
 const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /** Acepta el cron de Vercel (CRON_SECRET) o un usuario logueado en la app (token de Firebase). */
-async function autorizado(request: Request): Promise<{ ok: boolean; email?: string }> {
+async function autorizado(request: Request, fb: Admin): Promise<boolean> {
   const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? ''
-  if (!token) return { ok: false }
-  if (process.env.CRON_SECRET && token === process.env.CRON_SECRET) return { ok: true }
+  if (!token) return false
+  if (process.env.CRON_SECRET && token === process.env.CRON_SECRET) return true
   try {
-    db()
-    const user = await getAuth().verifyIdToken(token)
-    return { ok: true, email: user.email }
+    await fb.auth.verifyIdToken(token)
+    return true
   } catch {
-    return { ok: false }
+    return false
   }
 }
 
@@ -174,8 +187,15 @@ const pesos = new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS
 // ---------- Handler
 
 async function manejar(request: Request): Promise<Response> {
-  const auth = await autorizado(request)
-  if (!auth.ok) return json({ error: 'No autorizado' }, 401)
+  let fb: Admin
+  try {
+    fb = await admin()
+  } catch (e) {
+    console.error(e)
+    return json({ error: `No se pudo conectar con Firebase: ${(e as Error).message}` }, 500)
+  }
+  if (!(await autorizado(request, fb))) return json({ error: 'No autorizado' }, 401)
+  const { firestore, FieldValue, Timestamp } = fb
 
   const url = new URL(request.url)
   const simular = url.searchParams.get('simular') === '1'
@@ -190,7 +210,6 @@ async function manejar(request: Request): Promise<Response> {
       return json({ prueba: true, enviadoA: prueba })
     }
 
-    const firestore = db()
     const hoy = ymd(new Date())
     const [sociosSnap, preciosSnap] = await Promise.all([
       firestore.collection('socios').where('activo', '==', true).get(),
@@ -264,5 +283,19 @@ async function manejar(request: Request): Promise<Response> {
   }
 }
 
-export const GET = manejar
-export const POST = manejar
+/** Handler clásico de Vercel (Node.js): adapta la request y siempre responde JSON. */
+export default async function handler(req: IncomingMessage, res: ServerResponse) {
+  let respuesta: Response
+  try {
+    const headers = new Headers()
+    for (const [k, v] of Object.entries(req.headers)) if (typeof v === 'string') headers.set(k, v)
+    const url = `https://${req.headers.host ?? 'localhost'}${req.url ?? '/'}`
+    respuesta = await manejar(new Request(url, { method: req.method, headers }))
+  } catch (e) {
+    console.error(e)
+    respuesta = json({ error: `Error inesperado: ${(e as Error).message}` }, 500)
+  }
+  res.statusCode = respuesta.status
+  res.setHeader('Content-Type', 'application/json')
+  res.end(await respuesta.text())
+}
