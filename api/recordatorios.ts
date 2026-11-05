@@ -17,9 +17,7 @@ const PAGO_CONTACTO = process.env.PAGO_CONTACTO ?? 'Emanuel'
 const PAGO_WHATSAPP = process.env.PAGO_WHATSAPP ?? '3364315392'
 
 function comoPagar(): string {
-  const w = PAGO_WHATSAPP
-  const cel = /^\d{10}$/.test(w) ? `${w.slice(0, 3)} ${w.slice(3, 6)}-${w.slice(6)}` : w
-  return `Podés pagar por transferencia al alias ${PAGO_ALIAS} y enviarle el comprobante a ${PAGO_CONTACTO} por WhatsApp al ${cel}.`
+  return `Podés pagar por transferencia al alias ${PAGO_ALIAS} y enviarle el comprobante a ${PAGO_CONTACTO} por WhatsApp al ${PAGO_WHATSAPP}.`
 }
 /** Tope por ejecución: EmailJS acepta ~1 envío por segundo y la función tiene un tiempo máximo. */
 const MAX_POR_EJECUCION = 40
