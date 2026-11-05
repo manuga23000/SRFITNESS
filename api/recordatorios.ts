@@ -119,9 +119,9 @@ export function armarEmail(
  * al iniciarlo, el error llegue como respuesta a la app en vez de tumbar la función.
  */
 async function admin() {
-  const [{ cert, getApps, initializeApp }, { getAuth }, { FieldValue, getFirestore, Timestamp }] = await Promise.all([
+  // firebase-admin/auth NO se usa: depende de una librería (jose) que el Node de Vercel no puede cargar.
+  const [{ cert, getApps, initializeApp }, { FieldValue, getFirestore, Timestamp }] = await Promise.all([
     import('firebase-admin/app'),
-    import('firebase-admin/auth'),
     import('firebase-admin/firestore'),
   ])
   if (!getApps().length && process.env.FIRESTORE_EMULATOR_HOST) {
@@ -140,7 +140,7 @@ async function admin() {
     cuenta.private_key = String(cuenta.private_key).replace(/\\n/g, '\n')
     initializeApp({ credential: cert(cuenta) })
   }
-  return { firestore: getFirestore(), auth: getAuth(), FieldValue, Timestamp }
+  return { firestore: getFirestore(), FieldValue, Timestamp }
 }
 
 type Admin = Awaited<ReturnType<typeof admin>>
@@ -167,13 +167,31 @@ async function enviarEmailJs(params: DatosEmail): Promise<void> {
 const esperar = (ms: number) => new Promise((r) => setTimeout(r, ms))
 
 /** Acepta el cron de Vercel (CRON_SECRET) o un usuario logueado en la app (token de Firebase). */
-async function autorizado(request: Request, fb: Admin): Promise<boolean> {
+async function autorizado(request: Request): Promise<boolean> {
   const token = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') ?? ''
   if (!token) return false
   if (process.env.CRON_SECRET && token === process.env.CRON_SECRET) return true
+  return tokenDeFirebaseValido(token)
+}
+
+/**
+ * Verifica la sesión del profe preguntándole a Firebase Auth quién es el dueño del token
+ * (si el token es falso o venció, Firebase responde con error).
+ */
+async function tokenDeFirebaseValido(token: string): Promise<boolean> {
+  const emulador = process.env.FIREBASE_AUTH_EMULATOR_HOST
+  const apiKey = process.env.FIREBASE_API_KEY ?? process.env.VITE_FIREBASE_API_KEY ?? (emulador ? 'demo-key' : '')
+  if (!apiKey) throw new Error('Falta la variable VITE_FIREBASE_API_KEY en Vercel')
+  const base = emulador ? `http://${emulador}/identitytoolkit.googleapis.com` : 'https://identitytoolkit.googleapis.com'
   try {
-    await fb.auth.verifyIdToken(token)
-    return true
+    const res = await fetch(`${base}/v1/accounts:lookup?key=${encodeURIComponent(apiKey)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken: token }),
+    })
+    if (!res.ok) return false
+    const data = (await res.json()) as { users?: { disabled?: boolean }[] }
+    return Boolean(data.users?.length) && !data.users![0].disabled
   } catch {
     return false
   }
@@ -194,7 +212,13 @@ async function manejar(request: Request): Promise<Response> {
     console.error(e)
     return json({ error: `No se pudo conectar con Firebase: ${(e as Error).message}` }, 500)
   }
-  if (!(await autorizado(request, fb))) return json({ error: 'No autorizado' }, 401)
+  let ok: boolean
+  try {
+    ok = await autorizado(request)
+  } catch (e) {
+    return json({ error: (e as Error).message }, 500)
+  }
+  if (!ok) return json({ error: 'No autorizado' }, 401)
   const { firestore, FieldValue, Timestamp } = fb
 
   const url = new URL(request.url)
