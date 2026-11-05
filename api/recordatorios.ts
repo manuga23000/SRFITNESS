@@ -11,6 +11,16 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 
 const TZ = 'America/Argentina/Buenos_Aires'
 const GYM = 'SR Fitness Gym'
+/** Datos para pagar por transferencia (se pueden cambiar con variables en Vercel). */
+const PAGO_ALIAS = process.env.PAGO_ALIAS ?? 'LucasVigo1986'
+const PAGO_CONTACTO = process.env.PAGO_CONTACTO ?? 'Emanuel'
+const PAGO_WHATSAPP = process.env.PAGO_WHATSAPP ?? '3364315392'
+
+function comoPagar(): string {
+  const w = PAGO_WHATSAPP
+  const cel = /^\d{10}$/.test(w) ? `${w.slice(0, 3)} ${w.slice(3, 6)}-${w.slice(6)}` : w
+  return `Podés pagar por transferencia al alias ${PAGO_ALIAS} y enviarle el comprobante a ${PAGO_CONTACTO} por WhatsApp al ${cel}.`
+}
 /** Tope por ejecución: EmailJS acepta ~1 envío por segundo y la función tiene un tiempo máximo. */
 const MAX_POR_EJECUCION = 40
 
@@ -81,23 +91,23 @@ export function armarEmail(
   if (dias >= 1) {
     asunto = 'Tu cuota vence mañana'
     titulo = '¡Tu cuota vence mañana!'
-    mensaje = `Te recordamos que tu cuota de ${GYM} vence mañana, ${fecha}. Acercate a renovarla y seguí entrenando sin cortes.`
+    mensaje = `Te recordamos que tu cuota de ${GYM} vence mañana, ${fecha}. ${comoPagar()}`
   } else if (dias === 0) {
     asunto = 'Tu cuota vence hoy'
     titulo = '¡Tu cuota vence hoy!'
-    mensaje = `Te recordamos que tu cuota de ${GYM} vence hoy, ${fecha}. Acercate a renovarla y seguí entrenando sin cortes.`
+    mensaje = `Te recordamos que tu cuota de ${GYM} vence hoy, ${fecha}. ${comoPagar()}`
   } else if (dias === -1) {
     asunto = 'Tu cuota venció ayer'
     titulo = 'Tu cuota venció ayer'
-    mensaje = `Tu cuota de ${GYM} venció ayer, ${fecha}. Cuando puedas, acercate a renovarla.`
+    mensaje = `Tu cuota de ${GYM} venció ayer, ${fecha}. ${comoPagar()}`
   } else if (dias >= -6) {
     asunto = `Tu cuota está vencida hace ${-dias} días`
     titulo = `Tu cuota está vencida hace ${-dias} días`
-    mensaje = `Tu cuota de ${GYM} venció el ${fecha}. Te esperamos para renovarla y volver a entrenar.`
+    mensaje = `Tu cuota de ${GYM} venció el ${fecha}. ${comoPagar()}`
   } else {
     asunto = dias === -7 ? 'Tu cuota está vencida hace una semana' : `Tu cuota está vencida hace ${-dias} días`
     titulo = asunto
-    mensaje = `Tu cuota de ${GYM} venció el ${fecha}. ¡Te extrañamos! Acercate a renovarla cuando puedas. Si ya pagaste, ignorá este mensaje.`
+    mensaje = `Tu cuota de ${GYM} venció el ${fecha}. ¡Te extrañamos! ${comoPagar()}`
   }
   return {
     to_email: s.email,
@@ -228,8 +238,10 @@ async function manejar(request: Request): Promise<Response> {
   try {
     if (prueba) {
       const vence = ymd(new Date(Date.now() + 86_400_000))
+      const precio = (await firestore.doc('config/precios').get()).data()?.['3 veces']
+      const monto = typeof precio === 'number' && precio > 0 ? pesos.format(precio).replace(/\s/g, ' ') : '—'
       await enviarEmailJs(
-        armarEmail({ nombre: 'Profe', apellido: '', email: prueba, plan: '3 veces' }, vence, 1, '$ 30.000'),
+        armarEmail({ nombre: 'Profe', apellido: '', email: prueba, plan: '3 veces' }, vence, 1, monto),
       )
       return json({ prueba: true, enviadoA: prueba })
     }
